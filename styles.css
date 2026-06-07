@@ -38,10 +38,10 @@ button {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 420px);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
   gap: 28px;
   align-items: stretch;
-  min-height: 360px;
+  min-height: 520px;
 }
 
 .hero-copy {
@@ -115,9 +115,10 @@ h1 {
 
 .impact-panel {
   display: grid;
-  align-content: center;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
-  padding: 24px;
+  margin-top: 26px;
+  padding: 16px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: rgba(255, 253, 248, 0.76);
@@ -147,8 +148,7 @@ h1 {
 
 .experience-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(330px, 450px);
-  gap: 26px;
+  grid-template-columns: 1fr;
   margin-top: 28px;
 }
 
@@ -231,6 +231,10 @@ h1 {
   gap: 18px;
   justify-content: center;
   padding: 22px;
+}
+
+.hero-certificate {
+  align-self: center;
 }
 
 .certificate {
@@ -341,11 +345,6 @@ h1 {
 
   .hero-copy {
     padding: 18px 0 6px;
-  }
-
-  .impact-panel {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    padding: 12px;
   }
 
   .metric {
