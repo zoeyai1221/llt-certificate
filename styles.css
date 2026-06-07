@@ -315,12 +315,12 @@ h1 {
   align-items: center;
   gap: 7px;
   min-height: 42px;
-  border: 1px solid rgba(33, 78, 69, 0.16);
+  border: 1px solid rgba(200, 155, 60, 0.45);
   border-radius: 999px;
   padding: 0 14px 0 16px;
   color: var(--green);
-  background: rgba(255, 253, 248, 0.88);
-  box-shadow: 0 12px 34px rgba(38, 49, 47, 0.16);
+  background: rgba(255, 253, 248, 0.94);
+  box-shadow: 0 14px 38px rgba(38, 49, 47, 0.2);
   cursor: pointer;
   transform: translateX(-50%);
   transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
@@ -341,6 +341,10 @@ h1 {
   stroke-linejoin: round;
   stroke-width: 2.5;
   animation: cueBounce 1400ms ease-in-out infinite;
+}
+
+.scroll-cue svg {
+  color: var(--green);
 }
 
 .scroll-cue.hidden {
