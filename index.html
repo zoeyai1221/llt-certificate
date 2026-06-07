@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LLT 2025-2026 Certificate Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero" aria-labelledby="journey-title">
+        <div class="hero-copy">
+          <p class="eyebrow">LLT English Conversation Program</p>
+          <h1 id="journey-title">
+            <span id="person-name">Maria</span>, your 2025-2026 conversation journey
+          </h1>
+          <p id="summary-text" class="summary">
+            Your commitment helped build a welcoming space for practice,
+            confidence, and connection.
+          </p>
+          <p class="delivery-note">
+            This demo page is personalized from the participant's certificate link.
+          </p>
+        </div>
+
+        <div class="impact-panel" aria-label="Program impact summary">
+          <div class="metric">
+            <strong>0</strong>
+            <span>Conversations</span>
+          </div>
+          <div class="metric">
+            <strong>0</strong>
+            <span>Hours</span>
+          </div>
+          <div class="metric">
+            <strong>0</strong>
+            <span>Countries Connected</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="experience-grid" aria-label="Certificate experience">
+        <div class="map-stage">
+          <div class="section-heading">
+            <p class="eyebrow">Global Connection</p>
+            <h2>Conversations across borders</h2>
+          </div>
+          <svg class="world-map" viewBox="0 0 920 480" role="img" aria-label="A stylized world map with conversation connections">
+            <defs>
+              <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#c89b3c" />
+                <stop offset="100%" stop-color="#8a4f5e" />
+              </linearGradient>
+            </defs>
+
+            <path class="land" d="M142 148c41-41 116-61 174-37 41 17 72 16 105 3 33-12 77-10 99 22 24 34 11 71-24 90-49 27-71 51-137 44-56-6-73-31-116-20-47 12-109-1-128-43-16-36 2-82 27-107Z" />
+            <path class="land" d="M512 118c31-31 81-44 135-28 33 10 62 9 91 4 50-8 88 23 86 66-2 49-48 73-92 70-39-3-62 14-87 28-39 22-89 24-121-8-31-32-27-76 2-105Z" />
+            <path class="land" d="M602 304c35-25 86-22 115 5 29 28 22 68-12 88-36 21-86 13-114-16-28-29-26-56 11-81Z" />
+            <path class="land" d="M351 284c25 2 56 23 58 58 3 43-35 92-73 86-30-5-39-36-31-68 8-34 15-62 46-76Z" />
+            <path class="land" d="M725 254c28-7 58 3 69 24 14 27-4 56-35 57-28 1-56-18-61-42-4-20 6-34 27-39Z" />
+
+            <path class="connection" data-line d="M455 248 C520 165, 596 145, 665 151" />
+            <path class="connection" data-line d="M455 248 C394 188, 288 178, 214 203" />
+            <path class="connection" data-line d="M455 248 C531 305, 601 334, 660 350" />
+            <path class="connection" data-line d="M455 248 C477 318, 424 374, 348 382" />
+            <circle class="home-dot" cx="455" cy="248" r="8" />
+            <circle class="place-dot" cx="665" cy="151" r="6" />
+            <circle class="place-dot" cx="214" cy="203" r="6" />
+            <circle class="place-dot" cx="660" cy="350" r="6" />
+            <circle class="place-dot" cx="348" cy="382" r="6" />
+          </svg>
+          <div id="country-list" class="country-list"></div>
+        </div>
+
+        <aside class="certificate-wrap" aria-label="Certificate preview">
+          <div id="certificate" class="certificate">
+            <div class="certificate-border">
+              <p class="certificate-kicker">Certificate of Achievement</p>
+              <h2 id="certificate-name">Maria Rodriguez</h2>
+              <p id="certificate-body">
+                In recognition of completing 18 English Conversation sessions,
+                totaling 27 hours of participation during the 2025-2026 program year.
+              </p>
+              <div class="seal" aria-hidden="true">LLT</div>
+              <div class="signature-row">
+                <span>Founder Signature</span>
+                <span>Program Year 2025-2026</span>
+              </div>
+            </div>
+          </div>
+          <button id="download-button" class="download-button" type="button">Download Certificate</button>
+        </aside>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite">Demo download action</div>
+    <script src="./app.js"></script>
+  </body>
+</html>
