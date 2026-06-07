@@ -30,6 +30,7 @@ const profiles = {
 const metrics = document.querySelectorAll(".metric strong");
 const lines = document.querySelectorAll("[data-line]");
 const toast = document.querySelector("#toast");
+const scrollCue = document.querySelector("#scroll-cue");
 let currentProfileKey = "learner";
 
 function escapeXml(value) {
@@ -119,6 +120,22 @@ document.querySelector("#download-button").addEventListener("click", () => {
   toast.classList.add("show");
   window.setTimeout(() => toast.classList.remove("show"), 1700);
 });
+
+function scrollToMore() {
+  const target = document.querySelector("#impact-summary");
+  const offset = target.getBoundingClientRect().top + window.scrollY - 24;
+  window.scrollTo({ top: offset, behavior: "smooth" });
+}
+
+window.scrollToMore = scrollToMore;
+scrollCue.addEventListener("click", scrollToMore);
+
+function updateScrollCue() {
+  scrollCue.classList.toggle("hidden", window.scrollY > 90);
+}
+
+window.addEventListener("scroll", updateScrollCue, { passive: true });
+updateScrollCue();
 
 const requestedProfile = new URLSearchParams(window.location.search).get("profile");
 renderProfile(profiles[requestedProfile] ? requestedProfile : "learner");

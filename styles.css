@@ -306,6 +306,49 @@ h1 {
   width: 100%;
 }
 
+.scroll-cue {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  border: 1px solid rgba(33, 78, 69, 0.16);
+  border-radius: 999px;
+  padding: 0 14px 0 16px;
+  color: var(--green);
+  background: rgba(255, 253, 248, 0.88);
+  box-shadow: 0 12px 34px rgba(38, 49, 47, 0.16);
+  cursor: pointer;
+  transform: translateX(-50%);
+  transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease;
+  backdrop-filter: blur(10px);
+}
+
+.scroll-cue span {
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.scroll-cue svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.5;
+  animation: cueBounce 1400ms ease-in-out infinite;
+}
+
+.scroll-cue.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 12px);
+}
+
 .toast {
   position: fixed;
   left: 50%;
@@ -329,6 +372,17 @@ h1 {
 @keyframes drawLine {
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+@keyframes cueBounce {
+  0%,
+  100% {
+    transform: translateY(-1px);
+  }
+
+  50% {
+    transform: translateY(4px);
   }
 }
 
