@@ -66,6 +66,24 @@ function drawConnections() {
   });
 }
 
+const mapSection = document.querySelector("#global-connection");
+const mapObserver = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        drawConnections();
+      } else {
+        lines.forEach((line) => line.classList.remove("draw"));
+      }
+    });
+  },
+  { threshold: 0.35 }
+);
+
+if (mapSection) {
+  mapObserver.observe(mapSection);
+}
+
 function renderProfile(profileKey) {
   currentProfileKey = profileKey;
   const profile = profiles[profileKey];
@@ -82,8 +100,6 @@ function renderProfile(profileKey) {
   document.querySelector("#country-list").innerHTML = profile.places
     .map((place) => `<span>${place}</span>`)
     .join("");
-
-  drawConnections();
 }
 
 document.querySelector("#download-button").addEventListener("click", () => {
