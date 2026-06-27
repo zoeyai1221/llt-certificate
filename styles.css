@@ -36,19 +36,29 @@ button {
   padding: 40px 0 54px;
 }
 
+.brand-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.brand-logo {
+  width: auto;
+  height: 56px;
+}
+
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(340px, 430px);
   gap: 28px;
-  align-items: stretch;
-  min-height: 520px;
+  align-items: start;
 }
 
 .hero-copy {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: 42px 0;
+  justify-content: flex-start;
+  padding: 8px 0 0;
 }
 
 .eyebrow {
@@ -234,7 +244,8 @@ h1 {
 }
 
 .hero-certificate {
-  align-self: center;
+  align-self: start;
+  margin-top: -68px;
 }
 
 .certificate {
@@ -281,14 +292,15 @@ h1 {
 .seal {
   display: grid;
   place-items: center;
-  width: 72px;
-  height: 72px;
+  width: 84px;
+  height: 84px;
   margin-top: 28px;
-  border: 2px solid var(--gold);
-  border-radius: 50%;
-  color: var(--gold);
-  font-family: "Libre Baskerville", Georgia, serif;
-  font-weight: 700;
+}
+
+.seal img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .signature-row {
