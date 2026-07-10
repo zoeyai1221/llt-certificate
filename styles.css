@@ -424,6 +424,117 @@ h1 {
   }
 }
 
+/* ===== Interactive learner globe ===== */
+.globe-stage {
+  padding: 26px;
+}
+
+.globe-lede {
+  max-width: 640px;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.globe-map {
+  width: 100%;
+  max-width: 560px;
+  margin: 12px auto 0;
+}
+
+.globe-map svg {
+  display: block;
+  height: auto;
+  cursor: grab;
+}
+
+.globe-map svg:active {
+  cursor: grabbing;
+}
+
+.globe-stats {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 10px;
+}
+
+.globe-metric {
+  text-align: center;
+}
+
+.globe-metric strong {
+  display: block;
+  color: var(--green);
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.globe-metric span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.globe-legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.globe-legend-label {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.globe-legend-bar {
+  width: 160px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #9fe3dc 0%, var(--vivid-red) 100%);
+}
+
+.globe-hint {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.globe-tooltip {
+  position: absolute;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #ffffff;
+  background: rgba(9, 17, 70, 0.92);
+  box-shadow: 0 10px 26px rgba(9, 17, 70, 0.28);
+  font-size: 0.85rem;
+  line-height: 1.3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.globe-tooltip strong {
+  font-weight: 700;
+}
+
+.globe-tooltip span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
 @media (max-width: 860px) {
   .page-shell {
     width: min(100% - 22px, 720px);

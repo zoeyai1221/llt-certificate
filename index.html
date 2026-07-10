@@ -110,6 +110,36 @@
           <div id="country-list" class="country-list"></div>
         </div>
       </section>
+
+      <section id="learner-globe" class="experience-grid" aria-label="Where LLT learners come from">
+        <div class="map-stage globe-stage">
+          <div class="section-heading">
+            <p class="eyebrow">Our Global Community</p>
+            <h2>Where our learners come from</h2>
+          </div>
+          <p class="globe-lede">
+            Every highlighted country is home to at least one LLT learner. Drag to
+            spin the globe, or hover a country to see how many learners it represents.
+          </p>
+          <div id="globe-map" class="globe-map"></div>
+          <div class="globe-stats" aria-hidden="true">
+            <div class="globe-metric">
+              <strong id="globe-country-count">0</strong>
+              <span>Countries represented</span>
+            </div>
+            <div class="globe-metric">
+              <strong id="globe-learner-count">0</strong>
+              <span>Learners registered</span>
+            </div>
+          </div>
+          <div class="globe-legend">
+            <span class="globe-legend-label">Fewer learners</span>
+            <span class="globe-legend-bar" aria-hidden="true"></span>
+            <span class="globe-legend-label">More learners</span>
+          </div>
+          <p class="globe-hint">Click and drag to rotate</p>
+        </div>
+      </section>
     </main>
 
     <button id="scroll-cue" class="scroll-cue" type="button" aria-label="View more achievements" onclick="scrollToMore()">
@@ -121,5 +151,9 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite">Demo download action</div>
     <script src="./app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+    <script src="./assets/world-geo.js"></script>
+    <script src="./assets/country-counts.js"></script>
+    <script src="./globe.js"></script>
   </body>
 </html>

@@ -1,0 +1,7 @@
+# Raw learner data — contains PII (names, emails, phone numbers).
+# Not needed at runtime; the globe reads baked-in assets/country-counts.js.
+assets/LearnerRegistration.csv
+LearnerRegistration.csv
+
+# OS cruft
+.DS_Store
