@@ -124,6 +124,35 @@
     let isPaused = false;
     let previousMousePosition = null;
 
+    // Dismiss the "Drag to spin" hint on first interaction, or automatically a
+    // few seconds after the globe actually scrolls into view (not on page load,
+    // so the countdown doesn't run out before the user reaches this section).
+    const hint = document.getElementById("globe-hint");
+    let hintDismissed = false;
+    const dismissHint = () => {
+      if (hintDismissed || !hint) return;
+      hintDismissed = true;
+      hint.classList.add("is-dismissed");
+    };
+
+    if (hint && "IntersectionObserver" in window) {
+      let autoTimer = null;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && autoTimer === null) {
+              autoTimer = window.setTimeout(dismissHint, 6000);
+            }
+          });
+        },
+        { threshold: 0.4 }
+      );
+      observer.observe(container);
+    } else if (hint) {
+      // Fallback: no IntersectionObserver support.
+      window.setTimeout(dismissHint, 6000);
+    }
+
     const updatePaths = () =>
       svg.selectAll("g path").attr("d", (d) => pathGenerator(d));
 
@@ -135,6 +164,7 @@
           .drag()
           .on("start", (event) => {
             isPaused = true;
+            dismissHint();
             previousMousePosition = [event.x, event.y];
           })
           .on("drag", (event) => {

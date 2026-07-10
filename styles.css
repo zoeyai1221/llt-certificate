@@ -438,6 +438,7 @@ h1 {
 }
 
 .globe-map {
+  position: relative;
   width: 100%;
   max-width: 560px;
   margin: 12px auto 0;
@@ -502,11 +503,60 @@ h1 {
   background: linear-gradient(90deg, #9fe3dc 0%, var(--vivid-red) 100%);
 }
 
-.globe-hint {
-  margin: 12px 0 0;
-  color: var(--muted);
-  font-size: 0.82rem;
-  text-align: center;
+.globe-drag-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px 7px 11px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(9, 17, 70, 0.82);
+  box-shadow: 0 8px 22px rgba(9, 17, 70, 0.28);
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: globeHintPulse 2200ms ease-in-out infinite;
+  transition: opacity 400ms ease, transform 400ms ease;
+  backdrop-filter: blur(6px);
+}
+
+.globe-drag-hint svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: var(--turquoise);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.globe-drag-hint.is-dismissed {
+  opacity: 0;
+  transform: translate(-50%, 8px);
+  animation: none;
+}
+
+@keyframes globeHintPulse {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+
+  50% {
+    transform: translate(-50%, -5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe-drag-hint {
+    animation: none;
+  }
 }
 
 .globe-tooltip {
