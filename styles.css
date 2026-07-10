@@ -192,7 +192,6 @@ h1 {
 }
 
 .map-stage {
-  min-height: 560px;
   padding: 26px;
   overflow: hidden;
 }
@@ -203,9 +202,11 @@ h1 {
 }
 
 .world-map {
+  display: block;
   width: 100%;
-  min-height: 360px;
-  margin-top: 18px;
+  max-width: 860px;
+  height: auto;
+  margin: 18px auto 0;
 }
 
 .land {
