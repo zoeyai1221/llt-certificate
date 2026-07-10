@@ -282,23 +282,27 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100%;
-  padding: 30px 22px;
+  padding: 12px 22px 30px;
   border: 2px solid rgba(38, 188, 174, 0.70);
   text-align: center;
 }
 
 .certificate-kicker {
-  margin: 0 0 20px;
-  color: var(--rose);
-  font-size: 0.8rem;
+  /* gold foil title — real gold (the --gold token is turquoise in this palette) */
+  margin: 0 0 64px;
+  color: #f0c24b;
+  -webkit-text-stroke: 0.5px #c9962b;
+  text-stroke: 0.5px #c9962b;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0;
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .certificate h2 {
+  margin-top: 14px;
   color: var(--green);
   font-size: clamp(1.65rem, 4vw, 2.55rem);
   line-height: 1.16;
@@ -316,7 +320,7 @@ h1 {
   place-items: center;
   width: 84px;
   height: 84px;
-  margin-top: 28px;
+  margin-top: 14px;
 }
 
 .seal img {
