@@ -520,7 +520,7 @@ h1 {
 }
 
 .conn-home-dot {
-  fill: var(--vivid-red);
+  fill: var(--pastel-red);
   stroke: #ffffff;
   stroke-width: 2.5;
   transform-box: fill-box;
@@ -529,7 +529,7 @@ h1 {
 }
 
 .conn-home-pulse {
-  fill: var(--vivid-red);
+  fill: var(--pastel-red);
   transform-box: fill-box;
   transform-origin: center;
   pointer-events: none;
