@@ -458,6 +458,7 @@ h1 {
   stroke-width: 2.4;
   stroke-linecap: round;
   filter: drop-shadow(0 3px 8px rgba(240, 81, 78, 0.25));
+  pointer-events: none;
 }
 
 .conn-origin-arc {
@@ -467,6 +468,7 @@ h1 {
   stroke-linecap: round;
   stroke-dasharray: 2 6;
   opacity: 0.75;
+  pointer-events: none;
 }
 
 .conn-place-dot {

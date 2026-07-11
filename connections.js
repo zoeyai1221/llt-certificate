@@ -217,21 +217,49 @@
         .attr("class", "conn-origin-dot");
     }
 
-    // City dots (sized by count) + labels.
-    cities.forEach((c) => {
-      dotLayer
-        .append("circle")
-        .attr("cx", c.xy[0])
-        .attr("cy", c.xy[1])
-        .attr("r", scale(c.count))
-        .attr("class", "conn-place-dot");
-      dotLayer
-        .append("text")
-        .attr("x", c.xy[0])
-        .attr("y", c.xy[1] - scale(c.count) - 5)
-        .attr("class", "conn-place-label")
-        .text(c.city);
-    });
+    // City dots (sized by count) with hover tooltip, + labels.
+    const tip = tooltip();
+    dotLayer
+      .selectAll("circle.conn-place-dot")
+      .data(cities)
+      .enter()
+      .append("circle")
+      .attr("cx", (c) => c.xy[0])
+      .attr("cy", (c) => c.xy[1])
+      .attr("r", (c) => scale(c.count))
+      .attr("class", "conn-place-dot")
+      .style("cursor", "pointer")
+      .on("mouseover", function (event, c) {
+        d3.select(this).attr("r", scale(c.count) + 3).attr("fill", "#091146").raise();
+        tip
+          .html(
+            `<strong>${c.city}, ${c.state}</strong><span>${c.count} partner${
+              c.count === 1 ? "" : "s"
+            }</span>`
+          )
+          .style("opacity", 1)
+          .style("left", event.pageX + 12 + "px")
+          .style("top", event.pageY - 12 + "px");
+      })
+      .on("mousemove", function (event) {
+        tip
+          .style("left", event.pageX + 12 + "px")
+          .style("top", event.pageY - 12 + "px");
+      })
+      .on("mouseout", function (event, c) {
+        d3.select(this).attr("r", scale(c.count)).attr("fill", null);
+        tip.style("opacity", 0);
+      });
+
+    dotLayer
+      .selectAll("text.conn-place-label")
+      .data(cities)
+      .enter()
+      .append("text")
+      .attr("x", (c) => c.xy[0])
+      .attr("y", (c) => c.xy[1] - scale(c.count) - 5)
+      .attr("class", "conn-place-label")
+      .text((c) => c.city);
 
     // Home hub on top.
     if (hubXY) {
@@ -285,6 +313,7 @@
       .domain([0, Math.sqrt(maxC)])
       .interpolator(d3.interpolateRgb(HL_LOW, HL_HIGH));
 
+    const pathByName = {};
     const countryPaths = svg
       .append("g")
       .selectAll("path")
@@ -297,36 +326,57 @@
         return c ? fill(Math.sqrt(c)) : LAND;
       })
       .attr("stroke", LAND_STROKE)
-      .attr("stroke-width", 0.5);
-
-    // Hover tooltip on the connected countries.
-    const tip = tooltip();
-    countryPaths
-      .filter((d) => countByGeo[d.properties.name])
-      .style("cursor", "pointer")
-      .on("mouseover", function (event, d) {
-        const name = d.properties.name;
-        const c = countByGeo[name];
-        d3.select(this).attr("stroke", "#091146").attr("stroke-width", 1.2);
-        tip
-          .html(
-            `<strong>${displayByGeo[name] || name}</strong><span>${c} learner${
-              c === 1 ? "" : "s"
-            }</span>`
-          )
-          .style("opacity", 1)
-          .style("left", event.pageX + 12 + "px")
-          .style("top", event.pageY - 12 + "px");
-      })
-      .on("mousemove", function (event) {
-        tip
-          .style("left", event.pageX + 12 + "px")
-          .style("top", event.pageY - 12 + "px");
-      })
-      .on("mouseout", function () {
-        d3.select(this).attr("stroke", LAND_STROKE).attr("stroke-width", 0.5);
-        tip.style("opacity", 0);
+      .attr("stroke-width", 0.5)
+      .each(function (d) {
+        pathByName[d.properties.name] = this;
       });
+
+    // Shared hover behaviour, triggered by BOTH the country polygon and its dot
+    // (dots sit on top of the polygons, so small countries are only reachable
+    // via the dot).
+    const tip = tooltip();
+    const highlight = (name, on) => {
+      const el = pathByName[name];
+      if (!el) return;
+      d3.select(el)
+        .attr("stroke", on ? "#091146" : LAND_STROKE)
+        .attr("stroke-width", on ? 1.2 : 0.5);
+      if (on) d3.select(el).raise();
+    };
+    const showTip = (name, event) => {
+      const c = countByGeo[name];
+      tip
+        .html(
+          `<strong>${displayByGeo[name] || name}</strong><span>${c} learner${
+            c === 1 ? "" : "s"
+          }</span>`
+        )
+        .style("opacity", 1)
+        .style("left", event.pageX + 12 + "px")
+        .style("top", event.pageY - 12 + "px");
+    };
+    const bindHover = (sel, nameOf) =>
+      sel
+        .style("cursor", "pointer")
+        .on("mouseover", function (event, d) {
+          const name = nameOf(d);
+          highlight(name, true);
+          showTip(name, event);
+        })
+        .on("mousemove", function (event) {
+          tip
+            .style("left", event.pageX + 12 + "px")
+            .style("top", event.pageY - 12 + "px");
+        })
+        .on("mouseout", function (event, d) {
+          highlight(nameOf(d), false);
+          tip.style("opacity", 0);
+        });
+
+    bindHover(
+      countryPaths.filter((d) => countByGeo[d.properties.name]),
+      (d) => d.properties.name
+    );
 
     const hub = profile.homeCoord || cityCoord(profile.homeCity);
     const hubXY = hub ? projection(hub) : null;
@@ -357,14 +407,16 @@
       });
     }
 
-    targets.forEach((t) => {
-      dotLayer
-        .append("circle")
-        .attr("cx", t.xy[0])
-        .attr("cy", t.xy[1])
-        .attr("r", scale(t.count))
-        .attr("class", "conn-place-dot");
-    });
+    const dots = dotLayer
+      .selectAll("circle.conn-place-dot")
+      .data(targets)
+      .enter()
+      .append("circle")
+      .attr("cx", (t) => t.xy[0])
+      .attr("cy", (t) => t.xy[1])
+      .attr("r", (t) => scale(t.count))
+      .attr("class", "conn-place-dot");
+    bindHover(dots, (t) => geoName(t.country));
 
     if (hubXY) {
       dotLayer
