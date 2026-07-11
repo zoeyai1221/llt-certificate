@@ -1,7 +1,16 @@
-# Raw learner data — contains PII (names, emails, phone numbers).
-# Not needed at runtime; the globe reads baked-in assets/country-counts.js.
+# Raw registration/attendance data — contains PII (names, emails, phone numbers).
+# Build-time inputs only; not needed at runtime.
 assets/LearnerRegistration.csv
 LearnerRegistration.csv
+assets/VolunteerRegistration.csv
+assets/AttendanceTable_testing.xlsx
+
+# Large public reference dataset, build-time only (zip -> lat/lng).
+assets/zips.csv
+
+# Full connection dataset with real names (PII). The committed people-data.js
+# holds only the two anonymized demo samples.
+assets/people-data.full.js
 
 # OS cruft
 .DS_Store

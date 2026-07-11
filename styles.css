@@ -428,6 +428,117 @@ h1 {
   }
 }
 
+/* ===== Role-aware Global Connection map ===== */
+.connection-stage {
+  padding: 26px;
+}
+
+.connection-lede {
+  max-width: 680px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.connection-map {
+  width: 100%;
+  max-width: 900px;
+  margin: 10px auto 0;
+}
+
+.connection-svg {
+  display: block;
+  height: auto;
+}
+
+.conn-arc {
+  fill: none;
+  stroke: url("#connArc");
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 3px 8px rgba(240, 81, 78, 0.25));
+}
+
+.conn-origin-arc {
+  fill: none;
+  stroke: var(--turquoise);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 2 6;
+  opacity: 0.75;
+}
+
+.conn-place-dot {
+  fill: var(--turquoise);
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.conn-home-dot {
+  fill: var(--dark-blue);
+  stroke: #ffffff;
+  stroke-width: 2.5;
+}
+
+.conn-place-label {
+  fill: var(--green);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 3px;
+}
+
+.conn-origin-kicker {
+  fill: var(--rose);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.conn-origin-country {
+  fill: var(--green);
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.conn-origin-dot {
+  fill: var(--rose);
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.conn-tooltip {
+  position: absolute;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #ffffff;
+  background: rgba(9, 17, 70, 0.92);
+  box-shadow: 0 10px 26px rgba(9, 17, 70, 0.28);
+  font-size: 0.85rem;
+  line-height: 1.3;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.conn-tooltip strong {
+  font-weight: 700;
+}
+
+.conn-tooltip span {
+  color: rgba(255, 255, 255, 0.78);
+}
+
 /* ===== Interactive learner globe ===== */
 .globe-stage {
   padding: 26px;

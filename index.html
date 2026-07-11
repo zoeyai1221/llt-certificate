@@ -72,41 +72,18 @@
           </div>
           <div class="metric">
             <strong>0</strong>
-            <span>Countries Connected</span>
+            <span id="metric-connect-label">Countries Connected</span>
           </div>
       </section>
 
       <section id="global-connection" class="experience-grid" aria-label="Certificate experience">
-        <div class="map-stage">
+        <div class="map-stage connection-stage">
           <div class="section-heading">
             <p class="eyebrow">Global Connection</p>
-            <h2>Conversations across borders</h2>
+            <h2 id="connection-title">Conversations across borders</h2>
           </div>
-          <svg class="world-map" viewBox="0 0 920 480" role="img" aria-label="A stylized world map with conversation connections">
-            <defs>
-              <!-- Brand palette (Canva "Brand Colors"): turquoise #26bcae -> vivid red #f0514e -->
-              <linearGradient id="connectionGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#26bcae" />
-                <stop offset="100%" stop-color="#f0514e" />
-              </linearGradient>
-            </defs>
-
-            <path class="land" d="M142 148c41-41 116-61 174-37 41 17 72 16 105 3 33-12 77-10 99 22 24 34 11 71-24 90-49 27-71 51-137 44-56-6-73-31-116-20-47 12-109-1-128-43-16-36 2-82 27-107Z" />
-            <path class="land" d="M512 118c31-31 81-44 135-28 33 10 62 9 91 4 50-8 88 23 86 66-2 49-48 73-92 70-39-3-62 14-87 28-39 22-89 24-121-8-31-32-27-76 2-105Z" />
-            <path class="land" d="M602 304c35-25 86-22 115 5 29 28 22 68-12 88-36 21-86 13-114-16-28-29-26-56 11-81Z" />
-            <path class="land" d="M351 284c25 2 56 23 58 58 3 43-35 92-73 86-30-5-39-36-31-68 8-34 15-62 46-76Z" />
-            <path class="land" d="M725 254c28-7 58 3 69 24 14 27-4 56-35 57-28 1-56-18-61-42-4-20 6-34 27-39Z" />
-
-            <path class="connection" data-line d="M455 248 C520 165, 596 145, 665 151" />
-            <path class="connection" data-line d="M455 248 C394 188, 288 178, 214 203" />
-            <path class="connection" data-line d="M455 248 C531 305, 601 334, 660 350" />
-            <path class="connection" data-line d="M455 248 C477 318, 424 374, 348 382" />
-            <circle class="home-dot" cx="455" cy="248" r="8" />
-            <circle class="place-dot" cx="665" cy="151" r="6" />
-            <circle class="place-dot" cx="214" cy="203" r="6" />
-            <circle class="place-dot" cx="660" cy="350" r="6" />
-            <circle class="place-dot" cx="348" cy="382" r="6" />
-          </svg>
+          <p id="connection-lede" class="connection-lede"></p>
+          <div id="connection-map" class="connection-map"></div>
           <div id="country-list" class="country-list"></div>
         </div>
       </section>
@@ -158,10 +135,15 @@
     </button>
 
     <div id="toast" class="toast" role="status" aria-live="polite">Demo download action</div>
+    <script src="./assets/people-data.js"></script>
     <script src="./app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
     <script src="./assets/world-geo.js"></script>
+    <script src="./assets/us-geo.js"></script>
+    <script src="./assets/city-coords.js"></script>
     <script src="./assets/country-counts.js"></script>
     <script src="./globe.js"></script>
+    <script src="./connections.js"></script>
   </body>
 </html>
