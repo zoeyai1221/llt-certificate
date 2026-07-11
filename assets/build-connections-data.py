@@ -208,8 +208,27 @@ def main():
     # Defaults for the demo = richest maps; id tie-break keeps it deterministic.
     learners.sort(key=lambda p: (-len(p["partnerCities"]), p["id"]))
     volunteers.sort(key=lambda p: (-len(p["partnerCountries"]), p["id"]))
-    default_learner = next((p for p in learners if p["homeCoord"]), learners[0])
-    default_volunteer = next((p for p in volunteers if p["homeCoord"]), volunteers[0])
+
+    # Prefer a default with a clean, well-formed home city (every word
+    # title-cased) so the demo doesn't surface messy registration data.
+    import re
+
+    def clean_home(p):
+        city = p["homeCity"]["city"]
+        return bool(
+            p["homeCoord"]
+            and city not in ("USA", "")
+            and re.match(r"^[A-Z][a-zA-Z]+(?:[ '\-][A-Z][a-zA-Z]+)*$", city)
+        )
+
+    default_learner = next(
+        (p for p in learners if clean_home(p)),
+        next((p for p in learners if p["homeCoord"]), learners[0]),
+    )
+    default_volunteer = next(
+        (p for p in volunteers if clean_home(p)),
+        next((p for p in volunteers if p["homeCoord"]), volunteers[0]),
+    )
 
     # (1) FULL dataset with real names — internal use only (gitignored).
     full_payload = {

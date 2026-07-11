@@ -170,18 +170,55 @@
       .map((c) => ({ ...c, xy: projection(c.coord) }))
       .filter((c) => c.xy);
 
-    const scale = sizeScale(cities.map((c) => c.count));
+    // Merge partner cities that land too close together on screen (Google-Maps
+    // style clustering) so dense metros (CA / TX / NYC area) stay clickable.
+    const CLUSTER_PX = 26;
+    const clusters = [];
+    cities.forEach((c) => {
+      let best = null;
+      let bestD = CLUSTER_PX;
+      for (const cl of clusters) {
+        const d = Math.hypot(cl.x - c.xy[0], cl.y - c.xy[1]);
+        if (d < bestD) {
+          bestD = d;
+          best = cl;
+        }
+      }
+      if (best) {
+        best.members.push(c);
+        best.sum += c.count;
+        best.sx += c.xy[0];
+        best.sy += c.xy[1];
+        best.x = best.sx / best.members.length;
+        best.y = best.sy / best.members.length;
+      } else {
+        clusters.push({
+          members: [c],
+          sum: c.count,
+          sx: c.xy[0],
+          sy: c.xy[1],
+          x: c.xy[0],
+          y: c.xy[1],
+        });
+      }
+    });
+
+    const scale = d3
+      .scaleSqrt()
+      .domain([0, Math.max(1, d3.max(clusters, (cl) => cl.sum) || 1)])
+      .range([6, 16]);
     const arcLayer = svg.append("g").attr("class", "conn-arcs");
     const dotLayer = svg.append("g").attr("class", "conn-dots");
     const arcPaths = [];
 
+    // One arc from the learner's home city to each cluster.
     if (hubXY) {
-      cities.forEach((c) => {
-        if (c.xy[0] === hubXY[0] && c.xy[1] === hubXY[1]) return;
+      clusters.forEach((cl) => {
+        if (Math.hypot(cl.x - hubXY[0], cl.y - hubXY[1]) < 1) return;
         const p = arcLayer
           .append("path")
           .attr("class", "conn-arc")
-          .attr("d", arcPath(hubXY, c.xy))
+          .attr("d", arcPath(hubXY, [cl.x, cl.y]))
           .node();
         arcPaths.push(p);
       });
@@ -217,26 +254,41 @@
         .attr("class", "conn-origin-dot");
     }
 
-    // City dots (sized by count) with hover tooltip, + labels.
+    // Cluster dots. Hover shows the list of cities inside the cluster.
     const tip = tooltip();
-    dotLayer
-      .selectAll("circle.conn-place-dot")
-      .data(cities)
+    const clusterTip = (cl) => {
+      const lines = cl.members
+        .slice()
+        .sort((a, b) => b.count - a.count)
+        .map((m) => `${m.city}, ${m.state} · ${m.count}`);
+      if (cl.members.length === 1) {
+        const m = cl.members[0];
+        return `<strong>${m.city}, ${m.state}</strong><span>${m.count} partner${
+          m.count === 1 ? "" : "s"
+        }</span>`;
+      }
+      const shown = lines.slice(0, 10);
+      const more = lines.length - shown.length;
+      return (
+        `<strong>${cl.members.length} cities · ${cl.sum} partners</strong>` +
+        shown.map((l) => `<span>${l}</span>`).join("") +
+        (more > 0 ? `<span>+${more} more</span>` : "")
+      );
+    };
+
+    const clusterG = dotLayer
+      .selectAll("g.conn-cluster")
+      .data(clusters)
       .enter()
-      .append("circle")
-      .attr("cx", (c) => c.xy[0])
-      .attr("cy", (c) => c.xy[1])
-      .attr("r", (c) => scale(c.count))
-      .attr("class", "conn-place-dot")
+      .append("g")
+      .attr("class", "conn-cluster")
+      .attr("transform", (cl) => `translate(${cl.x},${cl.y})`)
       .style("cursor", "pointer")
-      .on("mouseover", function (event, c) {
-        d3.select(this).attr("r", scale(c.count) + 3).attr("fill", "#091146").raise();
+      .on("mouseover", function (event, cl) {
+        d3.select(this).select("circle").attr("r", scale(cl.sum) + 3).attr("fill", "#091146");
+        d3.select(this).raise();
         tip
-          .html(
-            `<strong>${c.city}, ${c.state}</strong><span>${c.count} partner${
-              c.count === 1 ? "" : "s"
-            }</span>`
-          )
+          .html(clusterTip(cl))
           .style("opacity", 1)
           .style("left", event.pageX + 12 + "px")
           .style("top", event.pageY - 12 + "px");
@@ -246,22 +298,23 @@
           .style("left", event.pageX + 12 + "px")
           .style("top", event.pageY - 12 + "px");
       })
-      .on("mouseout", function (event, c) {
-        d3.select(this).attr("r", scale(c.count)).attr("fill", null);
+      .on("mouseout", function (event, cl) {
+        d3.select(this).select("circle").attr("r", scale(cl.sum)).attr("fill", null);
         tip.style("opacity", 0);
       });
 
-    dotLayer
-      .selectAll("text.conn-place-label")
-      .data(cities)
-      .enter()
+    clusterG
+      .append("circle")
+      .attr("r", (cl) => scale(cl.sum))
+      .attr("class", "conn-place-dot");
+    clusterG
+      .filter((cl) => cl.members.length > 1)
       .append("text")
-      .attr("x", (c) => c.xy[0])
-      .attr("y", (c) => c.xy[1] - scale(c.count) - 5)
-      .attr("class", "conn-place-label")
-      .text((c) => c.city);
+      .attr("class", "conn-cluster-count")
+      .attr("dy", "0.32em")
+      .text((cl) => cl.members.length);
 
-    // Home hub on top.
+    // Home hub + the ONLY city label shown by default (the learner's own city).
     if (hubXY) {
       dotLayer
         .append("circle")
@@ -269,6 +322,14 @@
         .attr("cy", hubXY[1])
         .attr("r", 7)
         .attr("class", "conn-home-dot");
+      if (profile.homeCity && profile.homeCity.city) {
+        dotLayer
+          .append("text")
+          .attr("x", hubXY[0])
+          .attr("y", hubXY[1] - 12)
+          .attr("class", "conn-place-label")
+          .text(profile.homeCity.city);
+      }
     }
 
     armArcAnimation(document.getElementById("global-connection"), arcPaths);

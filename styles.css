@@ -494,6 +494,15 @@ h1 {
   stroke-width: 3px;
 }
 
+.conn-cluster-count {
+  fill: #ffffff;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+  pointer-events: none;
+}
+
 .conn-origin-kicker {
   fill: var(--rose);
   font-family: Inter, system-ui, sans-serif;
