@@ -159,6 +159,29 @@
     return d3.scaleSqrt().domain([0, max]).range([4, 13]);
   }
 
+  // Home ("you are here") marker: two staggered radar ripples behind a
+  // throbbing solid dot.
+  function addHomeMarker(layer, x, y) {
+    layer
+      .append("circle")
+      .attr("cx", x)
+      .attr("cy", y)
+      .attr("r", 8)
+      .attr("class", "conn-home-pulse");
+    layer
+      .append("circle")
+      .attr("cx", x)
+      .attr("cy", y)
+      .attr("r", 8)
+      .attr("class", "conn-home-pulse conn-home-pulse-2");
+    layer
+      .append("circle")
+      .attr("cx", x)
+      .attr("cy", y)
+      .attr("r", 7)
+      .attr("class", "conn-home-dot");
+  }
+
   // ---- Learner: US map with arcs to partner cities ----
   function renderLearner(container, profile) {
     const features = usFeatures();
@@ -328,14 +351,9 @@
       .attr("dy", "0.32em")
       .text((cl) => cl.members.length);
 
-    // Home hub dot + the learner's current-city label (the only label on the map).
+    // Home hub marker + the learner's current-city label (the only map label).
     if (hubXY) {
-      dotLayer
-        .append("circle")
-        .attr("cx", hubXY[0])
-        .attr("cy", hubXY[1])
-        .attr("r", 7)
-        .attr("class", "conn-home-dot");
+      addHomeMarker(dotLayer, hubXY[0], hubXY[1]);
       if (profile.homeCity && profile.homeCity.city) {
         dotLayer
           .append("text")
@@ -494,12 +512,7 @@
     bindHover(dots, (t) => geoName(t.country));
 
     if (hubXY) {
-      dotLayer
-        .append("circle")
-        .attr("cx", hubXY[0])
-        .attr("cy", hubXY[1])
-        .attr("r", 7)
-        .attr("class", "conn-home-dot");
+      addHomeMarker(dotLayer, hubXY[0], hubXY[1]);
       dotLayer
         .append("text")
         .attr("x", hubXY[0])
@@ -514,15 +527,23 @@
   function renderList(profile) {
     const list = document.getElementById("country-list");
     if (!list) return;
-    const items =
+    const TOP = 12;
+    const items = (
       profile.role === "volunteer"
-        ? (profile.partnerCountries || []).map(
-            (p) => `${p.country} · ${p.count}`
-          )
-        : (profile.partnerCities || []).map(
-            (c) => `${c.city}, ${c.state} · ${c.count}`
-          );
-    list.innerHTML = items.map((t) => `<span>${t}</span>`).join("");
+        ? (profile.partnerCountries || [])
+            .slice()
+            .sort((a, b) => b.count - a.count)
+            .map((p) => `${p.country} · ${p.count}`)
+        : (profile.partnerCities || [])
+            .slice()
+            .sort((a, b) => b.count - a.count)
+            .map((c) => `${c.city}, ${c.state} · ${c.count}`)
+    );
+    const shown = items.slice(0, TOP);
+    const more = items.length - shown.length;
+    list.innerHTML =
+      shown.map((t) => `<span>${t}</span>`).join("") +
+      (more > 0 ? `<span class="country-more">+${more} more</span>` : "");
   }
 
   let activeProfile = null;

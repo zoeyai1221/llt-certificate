@@ -257,6 +257,12 @@ h1 {
   font-weight: 700;
 }
 
+.country-list span.country-more {
+  border-style: dashed;
+  color: var(--muted);
+  background: transparent;
+}
+
 .certificate-wrap {
   display: flex;
   flex-direction: column;
@@ -514,9 +520,55 @@ h1 {
 }
 
 .conn-home-dot {
-  fill: var(--dark-blue);
+  fill: var(--vivid-red);
   stroke: #ffffff;
   stroke-width: 2.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: connHomeThrob 3000ms ease-in-out infinite;
+}
+
+.conn-home-pulse {
+  fill: var(--vivid-red);
+  transform-box: fill-box;
+  transform-origin: center;
+  pointer-events: none;
+  animation: connHomePulse 3000ms ease-out infinite;
+}
+
+.conn-home-pulse-2 {
+  animation-delay: 1500ms;
+}
+
+@keyframes connHomePulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes connHomeThrob {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .conn-home-pulse {
+    animation: none;
+    opacity: 0;
+  }
+  .conn-home-dot {
+    animation: none;
+  }
 }
 
 .conn-place-label {
