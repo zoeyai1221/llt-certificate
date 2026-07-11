@@ -88,8 +88,11 @@
 
   const LAND = "#eef2f5";
   const LAND_STROKE = "rgba(9, 17, 70, 0.18)";
-  const HL_LOW = "#c6ece7"; // low count highlight (turquoise tint)
-  const HL_HIGH = "#f0514e"; // high count highlight (vivid red)
+  const HL_LOW = "#c6ece7"; // volunteer country low count (turquoise tint)
+  const HL_HIGH = "#f0514e"; // volunteer country high count (vivid red)
+  const HOME_COLOR = "#f48a89"; // pastel-red — "you / home"
+  const ARC_HOME = "#f26a67"; // learner arc start — a touch redder than the dot
+  const LINK_COLOR = "#26bcae"; // turquoise — learner connections
 
   // Shared hover tooltip (created once, lazily).
   let tipSel = null;
@@ -110,15 +113,27 @@
       .attr("width", "100%")
       .attr("role", "img")
       .attr("aria-label", label);
-    const defs = svg.append("defs");
-    const grad = defs
-      .append("linearGradient")
-      .attr("id", "connArc")
-      .attr("x1", "0%")
-      .attr("x2", "100%");
-    grad.append("stop").attr("offset", "0%").attr("stop-color", "#26bcae");
-    grad.append("stop").attr("offset", "100%").attr("stop-color", "#f0514e");
+    svg.append("defs");
     return svg;
+  }
+
+  // A per-arc gradient aligned to the real endpoints: home end = pink ("you"),
+  // partner end = turquoise ("the connection"). Returns the gradient's url(#id).
+  let gradSeq = 0;
+  function arcStroke(svg, home, target) {
+    const id = `arcGrad${++gradSeq}`;
+    const g = svg
+      .select("defs")
+      .append("linearGradient")
+      .attr("id", id)
+      .attr("gradientUnits", "userSpaceOnUse")
+      .attr("x1", home[0])
+      .attr("y1", home[1])
+      .attr("x2", target[0])
+      .attr("y2", target[1]);
+    g.append("stop").attr("offset", "0%").attr("stop-color", ARC_HOME);
+    g.append("stop").attr("offset", "100%").attr("stop-color", LINK_COLOR);
+    return `url(#${id})`;
   }
 
   // Replay the arc-drawing animation every time the map scrolls into view.
@@ -275,6 +290,7 @@
         const p = arcLayer
           .append("path")
           .attr("class", "conn-arc")
+          .attr("stroke", arcStroke(svg, hubXY, [cl.x, cl.y]))
           .attr("d", arcPath(hubXY, [cl.x, cl.y]))
           .node();
         arcPaths.push(p);
@@ -490,10 +506,23 @@
     const scale = sizeScale(targets.map((p) => p.count));
 
     if (hubXY) {
+      // Brand turquoise -> vivid-red gradient (consistent with the rest of the
+      // page); keeps the most-connected countries visually "hot".
+      const brandId = `connArcBrand${++gradSeq}`;
+      const bg = svg
+        .select("defs")
+        .append("linearGradient")
+        .attr("id", brandId)
+        .attr("x1", "0%")
+        .attr("x2", "100%");
+      bg.append("stop").attr("offset", "0%").attr("stop-color", "#26bcae");
+      bg.append("stop").attr("offset", "100%").attr("stop-color", "#f0514e");
+      const brandStroke = `url(#${brandId})`;
       targets.forEach((t) => {
         const p = arcLayer
           .append("path")
           .attr("class", "conn-arc")
+          .attr("stroke", brandStroke)
           .attr("d", arcPath(hubXY, t.xy))
           .node();
         arcPaths.push(p);

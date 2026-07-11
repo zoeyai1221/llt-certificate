@@ -496,10 +496,9 @@ h1 {
 
 .conn-arc {
   fill: none;
-  stroke: url("#connArc");
   stroke-width: 2.4;
   stroke-linecap: round;
-  filter: drop-shadow(0 3px 8px rgba(240, 81, 78, 0.25));
+  filter: drop-shadow(0 3px 8px rgba(9, 17, 70, 0.16));
   pointer-events: none;
 }
 
