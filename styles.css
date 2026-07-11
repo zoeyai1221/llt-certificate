@@ -442,9 +442,45 @@ h1 {
 }
 
 .connection-map {
+  position: relative;
   width: 100%;
   max-width: 900px;
   margin: 10px auto 0;
+}
+
+.connection-origin-card {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(38, 188, 174, 0.35);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 8px 22px rgba(9, 17, 70, 0.12);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+.connection-origin-card .origin-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.connection-origin-card strong {
+  font-weight: 800;
+}
+
+.connection-origin-card .origin-flag {
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 .connection-svg {

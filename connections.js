@@ -19,6 +19,40 @@
     "United States": "USA",
   };
 
+  // Country (registration name) -> ISO 3166-1 alpha-2, for flag emoji.
+  const COUNTRY_ISO = {
+    China: "CN", Brazil: "BR", Mexico: "MX", Colombia: "CO", "South Korea": "KR",
+    Afghanistan: "AF", Venezuela: "VE", Haiti: "HT", Turkey: "TR", Ukraine: "UA",
+    Russia: "RU", India: "IN", Ecuador: "EC", Peru: "PE", Japan: "JP", Iran: "IR",
+    Vietnam: "VN", "Dominican Republic": "DO", Morocco: "MA", Honduras: "HN",
+    Taiwan: "TW", Egypt: "EG", Guatemala: "GT", Cuba: "CU", "Puerto Rico": "PR",
+    "El Salvador": "SV", Iraq: "IQ", Nicaragua: "NI", Jordan: "JO", Pakistan: "PK",
+    Kyrgyzstan: "KG", Azerbaijan: "AZ", Yemen: "YE", Ethiopia: "ET", Belarus: "BY",
+    "Democratic Republic of Congo": "CD", Lebanon: "LB", Spain: "ES", Algeria: "DZ",
+    France: "FR", Argentina: "AR", Sudan: "SD", Bangladesh: "BD", Syria: "SY",
+    "Costa Rica": "CR", Kazakhstan: "KZ", Nepal: "NP", Chile: "CL", Burma: "MM",
+    Thailand: "TH", Cameroon: "CM", Poland: "PL", Bolivia: "BO", Eritrea: "ER",
+    Turkmenistan: "TM", Indonesia: "ID", Palestine: "PS", "Saudi Arabia": "SA",
+    Libya: "LY", Panama: "PA", Philippines: "PH", "United Kingdom": "GB",
+    Israel: "IL", Italy: "IT", "Sri Lanka": "LK", Somalia: "SO", Senegal: "SN",
+    Bulgaria: "BG", "Cote d'Ivoire (Ivory Coast)": "CI", "Burkina Faso": "BF",
+    Armenia: "AM", "Cabo Verde": "CV", Uzbekistan: "UZ", Angola: "AO", Canada: "CA",
+    Mongolia: "MN", Tajikistan: "TJ", Cambodia: "KH", Uruguay: "UY", Tunisia: "TN",
+    "Czech Republic": "CZ", Hungary: "HU", Guinea: "GN", Mozambique: "MZ",
+    Serbia: "RS", Samoa: "WS", Niger: "NE", "South Africa": "ZA", Finland: "FI",
+    Moldova: "MD", Singapore: "SG", Romania: "RO", Mali: "ML", Croatia: "HR",
+    Portugal: "PT", Paraguay: "PY", Nigeria: "NG", Kenya: "KE", Zimbabwe: "ZW",
+    Albania: "AL", "United Arab Emirates": "AE", Madagascar: "MG", Germany: "DE",
+    Mauritania: "MR", Liberia: "LR", "Sierra Leone": "SL", "United States": "US",
+  };
+  const flagEmoji = (country) => {
+    const iso = COUNTRY_ISO[country];
+    if (!iso) return "🌍";
+    return iso
+      .toUpperCase()
+      .replace(/./g, (c) => String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65));
+  };
+
   const cityKey = (c) => `${c.city}, ${c.state}`;
   const cityCoord = (c) => CITY[cityKey(c)] || null;
 
@@ -224,34 +258,14 @@
       });
     }
 
-    // Origin: dashed inbound arc + badge, suggesting arrival from abroad.
-    if (hubXY && profile.originCountry) {
-      const anchor = [46, Math.max(60, hubXY[1] - 120)];
-      const originArc = arcLayer
-        .append("path")
-        .attr("class", "conn-origin-arc")
-        .attr("d", arcPath(anchor, hubXY))
-        .node();
-      arcPaths.unshift(originArc);
-      const badge = svg.append("g").attr("class", "conn-origin-badge");
-      badge
-        .append("text")
-        .attr("x", anchor[0])
-        .attr("y", anchor[1] - 14)
-        .attr("class", "conn-origin-kicker")
-        .text("FROM");
-      badge
-        .append("text")
-        .attr("x", anchor[0])
-        .attr("y", anchor[1] + 6)
-        .attr("class", "conn-origin-country")
-        .text(profile.originCountry);
-      badge
-        .append("circle")
-        .attr("cx", anchor[0])
-        .attr("cy", anchor[1] + 22)
-        .attr("r", 5)
-        .attr("class", "conn-origin-dot");
+    // Origin country shown as a separate corner card with its flag (off the map).
+    if (profile.originCountry) {
+      const card = document.createElement("div");
+      card.className = "connection-origin-card";
+      card.innerHTML = `<span class="origin-line"><span class="origin-flag" aria-hidden="true">${flagEmoji(
+        profile.originCountry
+      )}</span><span>From <strong>${profile.originCountry}</strong></span></span>`;
+      container.appendChild(card);
     }
 
     // Cluster dots. Hover shows the list of cities inside the cluster.
@@ -314,7 +328,7 @@
       .attr("dy", "0.32em")
       .text((cl) => cl.members.length);
 
-    // Home hub + the ONLY city label shown by default (the learner's own city).
+    // Home hub dot + the learner's current-city label (the only label on the map).
     if (hubXY) {
       dotLayer
         .append("circle")
