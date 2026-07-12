@@ -163,8 +163,16 @@ document.querySelector("#download-pdf").addEventListener("click", async () => {
   }
 });
 
+// Ordered stops the "see more" cue advances through, one click at a time.
+const scrollStops = ["#global-connection", "#learner-globe"];
+
 function scrollToMore() {
-  const target = document.querySelector("#impact-summary");
+  const current = window.scrollY;
+  const els = scrollStops.map((sel) => document.querySelector(sel)).filter(Boolean);
+  // Jump to the first stop that still sits below the current position.
+  const next = els.find((el) => el.getBoundingClientRect().top + current > current + 80);
+  const target = next || els[els.length - 1];
+  if (!target) return;
   const offset = target.getBoundingClientRect().top + window.scrollY - 24;
   window.scrollTo({ top: offset, behavior: "smooth" });
 }
@@ -173,7 +181,10 @@ window.scrollToMore = scrollToMore;
 scrollCue.addEventListener("click", scrollToMore);
 
 function updateScrollCue() {
-  scrollCue.classList.toggle("hidden", window.scrollY > 90);
+  // Keep the cue visible through the journey; hide it once the last stop is reached.
+  const last = document.querySelector(scrollStops[scrollStops.length - 1]);
+  const reachedLast = last && last.getBoundingClientRect().top < 140;
+  scrollCue.classList.toggle("hidden", reachedLast);
 }
 
 window.addEventListener("scroll", updateScrollCue, { passive: true });
