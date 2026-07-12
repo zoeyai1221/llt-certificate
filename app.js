@@ -73,8 +73,29 @@ function escapeXml(value) {
     .replaceAll("'", "&apos;");
 }
 
+const prefersReducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+).matches;
+
+// Impact-metric values are captured on render, then counted up the first time
+// the panel scrolls into view (instead of firing off-screen at load).
+let metricValues = [0, 0, 0];
+let metricsPlayed = false;
+
+function playMetrics() {
+  if (metricsPlayed) return;
+  metricsPlayed = true;
+  // Stagger the count starts so the three numbers visibly cascade.
+  metrics.forEach((metric, index) =>
+    window.setTimeout(
+      () => animateCount(metric, metricValues[index]),
+      index * 260
+    )
+  );
+}
+
 function animateCount(element, value) {
-  const duration = 850;
+  const duration = 1400;
   const startedAt = performance.now();
 
   function tick(now) {
@@ -105,8 +126,13 @@ function renderProfile(profile) {
       profile.role === "volunteer" ? "Countries Connected" : "Cities Connected";
   }
 
-  const values = [profile.sessions, profile.hours, connectionCount(profile)];
-  metrics.forEach((metric, index) => animateCount(metric, values[index]));
+  metricValues = [profile.sessions, profile.hours, connectionCount(profile)];
+  if (prefersReducedMotion) {
+    metrics.forEach((metric, index) => (metric.textContent = metricValues[index]));
+    metricsPlayed = true;
+  } else {
+    metrics.forEach((metric) => (metric.textContent = "0"));
+  }
 
   // Hand the active profile to the connection-map renderer (connections.js),
   // which may load after this script runs.
@@ -190,4 +216,71 @@ function updateScrollCue() {
 window.addEventListener("scroll", updateScrollCue, { passive: true });
 updateScrollCue();
 
+// ---- Scroll-in reveal + count-up-on-view ----
+function markReveals() {
+  const selectors = [
+    ".impact-panel .metric",
+    ".hero-certificate",
+    "#global-connection .section-heading",
+    "#connection-map",
+    "#country-list",
+    "#learner-globe .section-heading",
+    "#globe-map",
+    ".globe-metric",
+  ];
+  selectors.forEach((sel) =>
+    document
+      .querySelectorAll(sel)
+      .forEach((el) => el.setAttribute("data-reveal", ""))
+  );
+  const list = document.getElementById("country-list");
+  if (list) list.setAttribute("data-reveal-children", "");
+}
+
+function setupReveal() {
+  const targets = document.querySelectorAll("[data-reveal]");
+  if (prefersReducedMotion || !("IntersectionObserver" in window)) {
+    targets.forEach((el) => el.classList.add("is-visible"));
+    return;
+  }
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        if (el.hasAttribute("data-reveal-children")) {
+          Array.from(el.children).forEach((child, i) => {
+            child.style.animationDelay = `${i * 55}ms`;
+          });
+        }
+        el.classList.add("is-visible");
+        io.unobserve(el);
+      });
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+  );
+  targets.forEach((el) => io.observe(el));
+}
+
+function setupMetricCounter() {
+  const panel = document.querySelector("#impact-summary");
+  if (!panel || prefersReducedMotion || !("IntersectionObserver" in window)) {
+    playMetrics();
+    return;
+  }
+  const io = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        playMetrics();
+        io.disconnect();
+      }
+    },
+    { threshold: 0.4 }
+  );
+  io.observe(panel);
+}
+
 renderProfile(pickProfile());
+markReveals();
+setupReveal();
+setupMetricCounter();

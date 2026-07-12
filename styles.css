@@ -85,7 +85,7 @@ button {
 .eyebrow {
   margin: 0 0 12px;
   color: var(--rose);
-  font-size: 0.78rem;
+  font-size: 0.95rem;
   font-weight: 700;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -221,6 +221,17 @@ h1 {
   font-weight: 600;
 }
 
+/* Hover lift on the impact cards */
+.metric {
+  transition: transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease;
+}
+
+.metric:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(9, 17, 70, 0.1);
+}
+
 .experience-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -299,6 +310,14 @@ h1 {
   background: rgba(38, 188, 174, 0.12);
   font-size: 0.9rem;
   font-weight: 700;
+  transition: transform 180ms ease, background 180ms ease,
+    border-color 180ms ease;
+}
+
+.country-list span:hover {
+  transform: translateY(-2px);
+  border-color: rgba(38, 188, 174, 0.75);
+  background: rgba(38, 188, 174, 0.2);
 }
 
 .country-list span.country-more {
@@ -326,6 +345,48 @@ h1 {
   padding: 18px;
   background: linear-gradient(145deg, #ffffff, #fceff2);
   border: 1px solid rgba(38, 188, 174, 0.40);
+  position: relative;
+  overflow: hidden;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 320ms ease;
+}
+
+/* Light sweep across the certificate on hover (invisible at rest → clean PDF) */
+.certificate::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -70%;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  transform: skewX(-18deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.certificate-wrap:hover .certificate {
+  transform: translateY(-4px) rotate(-0.4deg);
+  box-shadow: 0 22px 42px rgba(9, 17, 70, 0.14);
+}
+
+.certificate-wrap:hover .certificate::after {
+  opacity: 1;
+  animation: certShine 900ms ease forwards;
+}
+
+@keyframes certShine {
+  from {
+    left: -70%;
+  }
+  to {
+    left: 140%;
+  }
 }
 
 .certificate-border {
@@ -906,5 +967,80 @@ h1 {
     flex-direction: column;
     align-items: center;
     gap: 8px;
+  }
+}
+
+/* ===== Scroll-in reveal + staggered entrances =====
+   Animation (not transition) is used so each element's own hover transition
+   stays intact; `backwards` fill hides it during its stagger delay, then hands
+   the resting state back to the element (so :hover transforms still work). */
+[data-reveal] {
+  opacity: 0;
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  animation: revealUp 640ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--reveal-i, 0) * 180ms);
+}
+
+@keyframes revealUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Stagger the three impact cards as they reveal */
+.impact-panel .metric:nth-child(1) {
+  --reveal-i: 0;
+}
+.impact-panel .metric:nth-child(2) {
+  --reveal-i: 1;
+}
+.impact-panel .metric:nth-child(3) {
+  --reveal-i: 2;
+}
+
+/* Country chips pop in one after another once the list reveals */
+.country-list[data-reveal-children] span {
+  opacity: 0;
+}
+
+.country-list[data-reveal-children].is-visible span {
+  opacity: 1;
+  animation: chipIn 460ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes chipIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  [data-reveal].is-visible,
+  .country-list[data-reveal-children] span,
+  .country-list[data-reveal-children].is-visible span {
+    opacity: 1;
+    animation: none;
+  }
+
+  .metric,
+  .country-list span,
+  .certificate,
+  .certificate-wrap:hover .certificate {
+    transition: none;
+    transform: none;
   }
 }
