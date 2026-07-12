@@ -321,6 +321,25 @@ h1 {
   line-height: 1.65;
 }
 
+/* highlight the session / hour numbers in the certificate body:
+   serif display figure + soft turquoise "highlighter" marker */
+.cert-stat {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.12em;
+  color: var(--green);
+  padding: 0 4px;
+  background-image: linear-gradient(transparent 60%, rgba(38, 188, 174, 0.38) 0);
+}
+
+/* program year — light emphasis only (serif italic, brand navy, no marker) */
+.cert-year {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--green);
+}
+
 .seal {
   display: grid;
   place-items: center;

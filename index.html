@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=5" />
   </head>
   <body>
     <main class="page-shell">
@@ -45,11 +45,11 @@
               <p class="certificate-kicker">Certificate of Achievement</p>
               <h2 id="certificate-name">Maria Rodriguez</h2>
               <p id="certificate-body">
-                In recognition of completing 18 English Conversation sessions,
-                totaling 27 hours of participation during the 2025-2026 program year.
+                In recognition of completing <span class="cert-stat">18</span> English Conversation sessions,
+                totaling <span class="cert-stat">27</span> hours of participation during the <span class="cert-year">2025-2026</span> program year.
               </p>
               <div class="seal" aria-hidden="true">
-                <img src="./assets/Llt-Logo-1100x950px.svg" alt="" />
+                <img src="./assets/llt-logo.png" alt="" />
               </div>
               <div class="signature-row">
                 <span>Founder Signature</span>
@@ -57,7 +57,7 @@
               </div>
             </div>
           </div>
-          <button id="download-button" class="download-button" type="button">Download Certificate</button>
+          <button id="download-pdf" class="download-button" type="button">Download Certificate</button>
         </aside>
       </section>
 
@@ -135,8 +135,10 @@
     </button>
 
     <div id="toast" class="toast" role="status" aria-live="polite">Demo download action</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="./assets/people-data.js"></script>
-    <script src="./app.js"></script>
+    <script src="./app.js?v=5"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
     <script src="./assets/world-geo.js"></script>
