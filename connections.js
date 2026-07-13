@@ -410,7 +410,7 @@
       container,
       W,
       H,
-      `World map showing countries ${profile.firstName} connected with`
+      `World map showing countries & regions ${profile.firstName} connected with`
     );
     const projection = d3.geoNaturalEarth1().fitExtent(
       [
@@ -658,7 +658,7 @@
       if (lede)
         lede.innerHTML = `${profile.firstName} connected with learners from <span class="conn-stat">${
           (profile.partnerCountries || []).length
-        }</span> countries around the globe.`;
+        }</span> countries &amp; regions around the globe.`;
       renderVolunteer(container, profile);
     } else {
       if (title) title.textContent = "Conversations across the country";

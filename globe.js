@@ -56,7 +56,7 @@
       .attr("width", "100%")
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("role", "img")
-      .attr("aria-label", "Rotating globe highlighting learner countries");
+      .attr("aria-label", "Rotating globe highlighting learner countries & regions");
 
     // ocean sphere
     svg

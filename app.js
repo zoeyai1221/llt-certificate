@@ -123,7 +123,7 @@ function renderProfile(profile) {
   const connectLabel = document.querySelector("#metric-connect-label");
   if (connectLabel) {
     connectLabel.textContent =
-      profile.role === "volunteer" ? "Countries Connected" : "Cities Connected";
+      profile.role === "volunteer" ? "Regions Connected" : "Cities Connected";
   }
 
   metricValues = [profile.sessions, profile.hours, connectionCount(profile)];
