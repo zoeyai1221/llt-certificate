@@ -605,6 +605,16 @@ h1 {
   line-height: 1.65;
 }
 
+/* Highlight the country / city count, matching the certificate figures */
+.conn-stat {
+  font-family: "Libre Baskerville", Georgia, serif;
+  font-weight: 700;
+  font-size: 1.2em;
+  color: var(--green);
+  padding: 0 4px;
+  background-image: linear-gradient(transparent 60%, rgba(38, 188, 174, 0.38) 0);
+}
+
 .connection-map {
   position: relative;
   width: 100%;
@@ -674,6 +684,14 @@ h1 {
   fill: var(--turquoise);
   stroke: #ffffff;
   stroke-width: 2;
+}
+
+/* Popped by hovering its country/city chip — stays brand turquoise so it never
+   competes with the red "home hub" marker; size bounce + glow do the emphasis */
+.conn-place-dot.conn-dot-active {
+  fill: var(--turquoise);
+  stroke-width: 3;
+  filter: drop-shadow(0 4px 10px rgba(38, 188, 174, 0.5));
 }
 
 .conn-home-dot {

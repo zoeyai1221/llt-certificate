@@ -367,6 +367,18 @@
       .attr("dy", "0.32em")
       .text((cl) => cl.members.length);
 
+    // Map every city (incl. those merged into a cluster) to its cluster dot.
+    clusterG.each(function (cl) {
+      const circle = this.querySelector("circle");
+      cl.members.forEach((m) => {
+        dotByKey[chipKey(m.city, m.state)] = {
+          circle,
+          raiseNode: this,
+          baseR: scale(cl.sum),
+        };
+      });
+    });
+
     // Home hub marker + the learner's current-city label (the only map label).
     if (hubXY) {
       addHomeMarker(dotLayer, hubXY[0], hubXY[1]);
@@ -540,6 +552,14 @@
       .attr("class", "conn-place-dot");
     bindHover(dots, (t) => geoName(t.country));
 
+    dots.each(function (t) {
+      dotByKey[String(t.country).toLowerCase()] = {
+        circle: this,
+        raiseNode: this,
+        baseR: scale(t.count),
+      };
+    });
+
     if (hubXY) {
       addHomeMarker(dotLayer, hubXY[0], hubXY[1]);
       dotLayer
@@ -557,29 +577,76 @@
     const list = document.getElementById("country-list");
     if (!list) return;
     const TOP = 12;
-    const items = (
+    const rows =
       profile.role === "volunteer"
         ? (profile.partnerCountries || [])
             .slice()
             .sort((a, b) => b.count - a.count)
-            .map((p) => `${p.country} · ${p.count}`)
+            .map((p) => ({
+              label: `${p.country} · ${p.count}`,
+              key: String(p.country).toLowerCase(),
+            }))
         : (profile.partnerCities || [])
             .slice()
             .sort((a, b) => b.count - a.count)
-            .map((c) => `${c.city}, ${c.state} · ${c.count}`)
-    );
-    const shown = items.slice(0, TOP);
-    const more = items.length - shown.length;
+            .map((c) => ({
+              label: `${c.city}, ${c.state} · ${c.count}`,
+              key: chipKey(c.city, c.state),
+            }));
+    const shown = rows.slice(0, TOP);
+    const more = rows.length - shown.length;
     list.innerHTML =
-      shown.map((t) => `<span>${t}</span>`).join("") +
+      shown
+        .map(
+          (r) =>
+            `<span data-dot-key="${r.key.replace(/"/g, "&quot;")}">${
+              r.label
+            }</span>`
+        )
+        .join("") +
       (more > 0 ? `<span class="country-more">+${more} more</span>` : "");
+
+    // Hover a chip -> pop the matching map dot.
+    list.querySelectorAll("span[data-dot-key]").forEach((chip) => {
+      const key = chip.getAttribute("data-dot-key");
+      chip.addEventListener("mouseenter", () => popDot(dotByKey[key], true));
+      chip.addEventListener("mouseleave", () => popDot(dotByKey[key], false));
+    });
   }
 
   let activeProfile = null;
 
+  // Links each country-list chip to its map dot, so hovering a chip pops the
+  // matching dot. Rebuilt on every render (map renders before the chip list).
+  let dotByKey = {};
+  const chipKey = (city, state) => `${city}|${state}`.toLowerCase();
+
+  function popDot(entry, on) {
+    if (!entry || !entry.circle || typeof d3 === "undefined") return;
+    const circle = d3.select(entry.circle);
+    circle.interrupt();
+    if (on) {
+      if (entry.raiseNode) d3.select(entry.raiseNode).raise();
+      circle
+        .classed("conn-dot-active", true)
+        .transition()
+        .duration(380)
+        .ease(d3.easeBackOut.overshoot(2.6))
+        .attr("r", entry.baseR * 1.8);
+    } else {
+      circle
+        .classed("conn-dot-active", false)
+        .transition()
+        .duration(220)
+        .ease(d3.easeCubicOut)
+        .attr("r", entry.baseR);
+    }
+  }
+
   function render(profile) {
     if (!profile) return;
     activeProfile = profile;
+    dotByKey = {};
     const container = document.getElementById("connection-map");
     if (!container || typeof d3 === "undefined") return;
     container.innerHTML = "";
@@ -589,18 +656,18 @@
     if (profile.role === "volunteer") {
       if (title) title.textContent = "Conversations across the world";
       if (lede)
-        lede.textContent = `${profile.firstName} connected with learners from ${
+        lede.innerHTML = `${profile.firstName} connected with learners from <span class="conn-stat">${
           (profile.partnerCountries || []).length
-        } countries around the globe.`;
+        }</span> countries around the globe.`;
       renderVolunteer(container, profile);
     } else {
       if (title) title.textContent = "Conversations across the country";
       if (lede)
-        lede.textContent = `From ${profile.originCountry}, ${
+        lede.innerHTML = `From ${profile.originCountry}, ${
           profile.firstName
-        } practiced with partners across ${
+        } practiced with partners across <span class="conn-stat">${
           (profile.partnerCities || []).length
-        } US cities.`;
+        }</span> US cities.`;
       renderLearner(container, profile);
     }
     renderList(profile);
